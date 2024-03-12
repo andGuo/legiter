@@ -1,6 +1,5 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -13,7 +12,7 @@ import (
 // verifyCmd represents the verify command
 var verifyCmd = &cobra.Command{
 	Use:   "verify",
-	Short: "A brief description of your command",
+	Short: "Verifies a file using a digital signature algorithm and a public key",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

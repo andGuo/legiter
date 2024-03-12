@@ -1,5 +1,6 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+
 */
 package cmd
 
@@ -9,10 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// signCmd represents the sign command
-var signCmd = &cobra.Command{
-	Use:   "sign",
-	Short: "Signs a file using a digital signature algorithm and a private key",
+// keygenCmd represents the keygen command
+var keygenCmd = &cobra.Command{
+	Use:   "keygen",
+	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -20,20 +21,20 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("sign called")
+		fmt.Println("keygen called")
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(signCmd)
+	rootCmd.AddCommand(keygenCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// signCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// keygenCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// signCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// keygenCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
