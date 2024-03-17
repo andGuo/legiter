@@ -4,6 +4,12 @@ import (
 	"github.com/cloudflare/circl/sign/eddilithium2"
 )
 
+const (
+	PublicKeySize  = eddilithium2.PublicKeySize
+	PrivateKeySize = eddilithium2.PrivateKeySize
+	SignatureSize  = eddilithium2.SignatureSize
+)
+
 func Generate() (*eddilithium2.PublicKey, *eddilithium2.PrivateKey) {
 	pubKey, privKey, err := eddilithium2.GenerateKey(nil)
 

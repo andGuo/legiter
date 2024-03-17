@@ -4,6 +4,12 @@ import (
 	"github.com/cloudflare/circl/sign/dilithium/mode3aes"
 )
 
+const (
+	PublicKeySize  = mode3aes.PublicKeySize
+	PrivateKeySize = mode3aes.PrivateKeySize
+	SignatureSize  = mode3aes.SignatureSize
+)
+
 func Generate() (*mode3aes.PublicKey, *mode3aes.PrivateKey) {
 	pubKey, privKey, err := mode3aes.GenerateKey(nil)
 
