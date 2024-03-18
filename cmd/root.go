@@ -58,5 +58,4 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.PersistentFlags().StringVarP(&algorithm, "algorithm", "a", "ed448_dilithium3", "The type of digital signature algorithm to use")
 }

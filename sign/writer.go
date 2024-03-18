@@ -24,31 +24,48 @@ func genPemPrivKey(privKey []byte, algorithm string) []byte {
 	})
 }
 
-func WriteKeyPairToFile(pubKey []byte, privKey []byte, filename string, algorithm string) error {
+func getFilepath(filename string, defaultStr string) (string, error) {
 	fpath, fname := path.Split(filename)
 
 	if fname == "" {
-		fname = algorithm
+		fname = defaultStr
 	}
 
 	if fpath != "" {
 		if _, err := os.Stat(fpath); os.IsNotExist(err) {
 			err := os.MkdirAll(fpath, 0700)
 			if err != nil {
-				return err
+				return "", err
 			}
 		}
 	} else {
 		fpath = "."
 	}
 
-	err := os.WriteFile(fpath+"/"+fname+".pub", genPemPubKey(pubKey, algorithm), 0644)
+	return fpath + "/" + fname, nil
+}
+
+func WriteKeyPairToFile(pubKey []byte, privKey []byte, filename string, algorithm string) error {
+	path, err := getFilepath(filename, algorithm)
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(fpath+"/"+fname+".key", genPemPrivKey(privKey, algorithm), 0644)
+	err = os.WriteFile(path+".pub", genPemPubKey(pubKey, algorithm), 0644)
+	if err != nil {
+		return err
+	}
 
+	err = os.WriteFile(path+".key", genPemPrivKey(privKey, algorithm), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func WriteSignatureToFile(signature []byte, filename string) error {
+	err := os.WriteFile(filename+".sig", signature, 0644)
 	if err != nil {
 		return err
 	}

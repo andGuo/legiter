@@ -40,7 +40,7 @@ var keygenCmd = &cobra.Command{
 	Run: keygen,
 }
 
-func checkWriteError(err error) {
+func checkKeygenError(err error) {
 	if err != nil {
 		fmt.Println("Error writing key pair to file:", err)
 	}
@@ -52,42 +52,42 @@ func keygen(cmd *cobra.Command, args []string) {
 		fmt.Println("Generating Ed25519 key pair")
 		pubKey, privKey := ed25519.Generate()
 		err := sign.WriteKeyPairToFile(pubKey, privKey, filename, "ed25519")
-		checkWriteError(err)
+		checkKeygenError(err)
 	case "ed448":
 		fmt.Println("Generating Ed448 key pair")
 		pubKey, privKey := ed448.Generate()
 		err := sign.WriteKeyPairToFile(pubKey, privKey, filename, "ed448")
-		checkWriteError(err)
+		checkKeygenError(err)
 	case "dilithium2":
 		fmt.Println("Generating Dilithium2 key pair")
 		pubKey, privKey := dilithium2.Generate()
 		err := sign.WriteKeyPairToFile(pubKey.Bytes(), privKey.Bytes(), filename, "dilithium2")
-		checkWriteError(err)
+		checkKeygenError(err)
 	case "dilithium3":
 		fmt.Println("Generating Dilithium3 key pair")
 		pubKey, privKey := dilithium3.Generate()
 		err := sign.WriteKeyPairToFile(pubKey.Bytes(), privKey.Bytes(), filename, "dilithium3")
-		checkWriteError(err)
+		checkKeygenError(err)
 	case "dilithium2_aes":
 		fmt.Println("Generating Dilithium2-AES key pair")
 		pubKey, privKey := dilithium2aes.Generate()
 		err := sign.WriteKeyPairToFile(pubKey.Bytes(), privKey.Bytes(), filename, "dilithium2_aes")
-		checkWriteError(err)
+		checkKeygenError(err)
 	case "dilithium3_aes":
 		fmt.Println("Generating Dilithium3-AES key pair")
 		pubKey, privKey := dilithium3aes.Generate()
 		err := sign.WriteKeyPairToFile(pubKey.Bytes(), privKey.Bytes(), filename, "dilithium3_aes")
-		checkWriteError(err)
+		checkKeygenError(err)
 	case "ed25519_dilithium2":
 		fmt.Println("Generating Ed25519-Dilithium2 key pair")
 		pubKey, privKey := eddilithium2.Generate()
 		err := sign.WriteKeyPairToFile(pubKey.Bytes(), privKey.Bytes(), filename, "ed25519_dilithium2")
-		checkWriteError(err)
+		checkKeygenError(err)
 	case "ed448_dilithium3":
 		fmt.Println("Generating Ed448-Dilithium3 key pair")
 		pubKey, privKey := eddilithium3.Generate()
 		err := sign.WriteKeyPairToFile(pubKey.Bytes(), privKey.Bytes(), filename, "ed448_dilithium3")
-		checkWriteError(err)
+		checkKeygenError(err)
 	default:
 		fmt.Println("ERROR - Unsupported algorithm:", algorithm)
 		cmd.Help()
