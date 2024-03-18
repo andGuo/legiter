@@ -94,6 +94,9 @@ func keygen(cmd *cobra.Command, args []string) {
 	}
 }
 
+var filename string
+var algorithm string
+
 func init() {
 	rootCmd.AddCommand(keygenCmd)
 

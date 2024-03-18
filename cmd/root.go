@@ -32,9 +32,6 @@ func Execute() {
 	}
 }
 
-var algorithm string
-var filename string
-
 func availableAlgorithms() []string {
 	return []string{
 		"ed25519",

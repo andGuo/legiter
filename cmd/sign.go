@@ -22,23 +22,28 @@ import (
 
 // signCmd represents the sign command
 var signCmd = &cobra.Command{
-	Use:   "sign",
+	Use:   "sign <filename>",
 	Short: "Signs a file using a digital signature algorithm and a private key",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `
+	Signs a file using a digital signature algorithm and a private key. The supported algorithms are:
+	- ed25519
+	- ed448
+	- dilithium2
+	- dilithium3
+	- dilithium2_aes
+	- dilithium3_aes
+	- ed25519_dilithium2
+	- ed448_dilithium3
+	`,
 	Args: cobra.ExactArgs(1),
 	Run:  signer,
 }
 
 // TODO: Refactor this using interfaces
 func signer(cmd *cobra.Command, args []string) {
-	fmt.Printf("Signing file (%s) using private key (%s)\n", args[0], filename)
+	fmt.Printf("Signing file (%s) using private key (%s)\n", args[0], privKeyFilename)
 
-	keyBytes, keyType, err := sign.GetPrivKey(filename)
+	keyBytes, keyType, err := sign.GetPrivKey(privKeyFilename)
 	if err != nil {
 		fmt.Println("Error reading private key:", err)
 		return
@@ -166,16 +171,18 @@ func signer(cmd *cobra.Command, args []string) {
 			fmt.Println("Error writing signature to file:", err)
 		}
 	default:
-		fmt.Println("ERROR - Unsupported algorithm:", algorithm)
+		fmt.Println("ERROR - Unsupported algorithm:", keyType)
 		cmd.Help()
 	}
 }
 
+var privKeyFilename string
+
 func init() {
 	rootCmd.AddCommand(signCmd)
 
-	signCmd.Flags().StringVarP(&filename, "filename", "f", "", "The file of the private key to use for signing")
-	signCmd.MarkFlagRequired("filename")
+	signCmd.Flags().StringVarP(&privKeyFilename, "key", "k", "", "The file of the private key to use for signing")
+	signCmd.MarkFlagRequired("key")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

@@ -21,23 +21,28 @@ import (
 
 // verifyCmd represents the verify command
 var verifyCmd = &cobra.Command{
-	Use:   "verify",
+	Use:   "verify <filename>",
 	Short: "Verifies a file using a digital signature algorithm and a public key",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `
+	Verifies a file using a digital signature algorithm and a public key. The digital signature of the file must be provided using the --signature (-s) flag. The public key to use for verification must be provided using the --key (-k) flag. The supported algorithms are:
+	- ed25519
+	- ed448
+	- dilithium2
+	- dilithium3
+	- dilithium2_aes
+	- dilithium3_aes
+	- ed25519_dilithium2
+	- ed448_dilithium3
+`,
 	Args: cobra.ExactArgs(1),
 	Run:  verifier,
 }
 
 // TODO: Refactor this using interfaces
 func verifier(cmd *cobra.Command, args []string) {
-	fmt.Printf("Verifying file (%s) using public key (%s)\n", args[0], filename)
+	fmt.Printf("Verifying file (%s) using public key (%s)\n", args[0], pubKeyFilename)
 
-	keyBytes, keyType, err := sign.GetPubKey(filename)
+	keyBytes, keyType, err := sign.GetPubKey(pubKeyFilename)
 	if err != nil {
 		fmt.Println("Error reading public key:", err)
 		return
@@ -213,18 +218,19 @@ func verifier(cmd *cobra.Command, args []string) {
 			fmt.Println("The file is not legitimate 🚫")
 		}
 	default:
-		fmt.Println("ERROR - Unsupported algorithm:", algorithm)
+		fmt.Println("ERROR - Unsupported algorithm:", keyType)
 		cmd.Help()
 	}
 }
 
 var signatureFilename string
+var pubKeyFilename string
 
 func init() {
 	rootCmd.AddCommand(verifyCmd)
 
-	verifyCmd.Flags().StringVarP(&filename, "filename", "f", "", "The file of the public key to use for verification")
-	verifyCmd.MarkFlagRequired("filename")
+	verifyCmd.Flags().StringVarP(&pubKeyFilename, "key", "k", "", "The file of the public key to use for verification")
+	verifyCmd.MarkFlagRequired("key")
 	verifyCmd.Flags().StringVarP(&signatureFilename, "signature", "s", "", "The digital signature of the file")
 	verifyCmd.MarkFlagRequired("signature")
 
