@@ -5,17 +5,9 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"legiter/sign"
-	"legiter/sign/dilithium2"
-	"legiter/sign/dilithium2aes"
-	"legiter/sign/dilithium3"
-	"legiter/sign/dilithium3aes"
-	"legiter/sign/ed25519"
-	"legiter/sign/ed448"
-	"legiter/sign/eddilithium2"
-	"legiter/sign/eddilithium3"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -36,11 +28,10 @@ var signCmd = &cobra.Command{
 	- ed448_dilithium3
 	`,
 	Args: cobra.ExactArgs(1),
-	Run:  signer,
+	Run:  signing,
 }
 
-// TODO: Refactor this using interfaces
-func signer(cmd *cobra.Command, args []string) {
+func signing(cmd *cobra.Command, args []string) {
 	fmt.Printf("Signing file (%s) using private key (%s)\n", args[0], privKeyFilename)
 
 	keyBytes, keyType, err := sign.GetPrivKey(privKeyFilename)
@@ -49,131 +40,32 @@ func signer(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	switch strings.ToLower(keyType) {
-	case "ed25519":
-		privKey, err := ed25519.BytesToPrivateKey(keyBytes)
-		if err != nil {
-			fmt.Println("Error converting private key:", err)
-		}
-		fileBytes, err := sign.ReadFile(args[0])
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return
-		}
-		signature := ed25519.Sign(privKey, fileBytes)
-		err = sign.WriteSignatureToFile(signature, args[0])
-		if err != nil {
-			fmt.Println("Error writing signature to file:", err)
-		}
-	case "ed448":
-		privKey, err := ed448.BytesToPrivateKey(keyBytes)
-		if err != nil {
-			fmt.Println("Error converting private key:", err)
-		}
-		fileBytes, err := sign.ReadFile(args[0])
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return
-		}
-		signature := ed448.Sign(privKey, fileBytes)
-		err = sign.WriteSignatureToFile(signature, args[0])
-		if err != nil {
-			fmt.Println("Error writing signature to file:", err)
-		}
-	case "dilithium2":
-		privKey, err := dilithium2.BytesToPrivateKey(keyBytes)
-		if err != nil {
-			fmt.Println("Error converting private key:", err)
-		}
-		fileBytes, err := sign.ReadFile(args[0])
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return
-		}
-		signature := dilithium2.Sign(privKey, fileBytes)
-		err = sign.WriteSignatureToFile(signature, args[0])
-		if err != nil {
-			fmt.Println("Error writing signature to file:", err)
-		}
-	case "dilithium3":
-		privKey, err := dilithium3.BytesToPrivateKey(keyBytes)
-		if err != nil {
-			fmt.Println("Error converting private key:", err)
-		}
-		fileBytes, err := sign.ReadFile(args[0])
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return
-		}
-		signature := dilithium3.Sign(privKey, fileBytes)
-		err = sign.WriteSignatureToFile(signature, args[0])
-		if err != nil {
-			fmt.Println("Error writing signature to file:", err)
-		}
-	case "dilithium2_aes":
-		privKey, err := dilithium2aes.BytesToPrivateKey(keyBytes)
-		if err != nil {
-			fmt.Println("Error converting private key:", err)
-		}
-		fileBytes, err := sign.ReadFile(args[0])
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return
-		}
-		signature := dilithium2aes.Sign(privKey, fileBytes)
-		err = sign.WriteSignatureToFile(signature, args[0])
-		if err != nil {
-			fmt.Println("Error writing signature to file:", err)
-		}
-	case "dilithium3_aes":
-		privKey, err := dilithium3aes.BytesToPrivateKey(keyBytes)
-		if err != nil {
-			fmt.Println("Error converting private key:", err)
-		}
-		fileBytes, err := sign.ReadFile(args[0])
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return
-		}
-		signature := dilithium3aes.Sign(privKey, fileBytes)
-		err = sign.WriteSignatureToFile(signature, args[0])
-		if err != nil {
-			fmt.Println("Error writing signature to file:", err)
-		}
-	case "ed25519_dilithium2":
-		privKey, err := eddilithium2.BytesToPrivateKey(keyBytes)
-		if err != nil {
-			fmt.Println("Error converting private key:", err)
-		}
-		fileBytes, err := sign.ReadFile(args[0])
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return
-		}
-		signature := eddilithium2.Sign(privKey, fileBytes)
-		err = sign.WriteSignatureToFile(signature, args[0])
-		if err != nil {
-			fmt.Println("Error writing signature to file:", err)
-		}
-	case "ed448_dilithium3":
-		privKey, err := eddilithium3.BytesToPrivateKey(keyBytes)
-		if err != nil {
-			fmt.Println("Error converting private key:", err)
-		}
-		fileBytes, err := sign.ReadFile(args[0])
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return
-		}
-		signature := eddilithium3.Sign(privKey, fileBytes)
-		err = sign.WriteSignatureToFile(signature, args[0])
-		if err != nil {
-			fmt.Println("Error writing signature to file:", err)
-		}
-	default:
-		fmt.Println("ERROR - Unsupported algorithm:", keyType)
+	signer, err := sign.GetSigner(strings.ToLower(keyType))
+	if err != nil {
+		fmt.Println("Error:", err)
 		cmd.Help()
+		return
 	}
+
+	privKey, err := signer.BytesToPrivateKey(keyBytes)
+	if err != nil {
+		fmt.Println("Error converting private key:", err)
+		return
+	}
+
+	fileBytes, err := sign.ReadFile(args[0])
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	signature := signer.Sign(privKey, fileBytes)
+
+	err = sign.WriteSignatureToFile(signature, args[0])
+	if err != nil {
+		fmt.Println("Error writing signature to file:", err)
+	}
+
 }
 
 var privKeyFilename string

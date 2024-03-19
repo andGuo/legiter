@@ -1,8 +1,44 @@
 package eddilithium2
 
 import (
+	"legiter/signer"
+
 	"github.com/cloudflare/circl/sign/eddilithium2"
 )
+
+// Implement the Signer interface
+type Eddilithium2 struct{}
+
+func Signer() signer.Signer {
+	return &Eddilithium2{}
+}
+
+func (*Eddilithium2) Name() string {
+	return "ed488_dilithium2"
+}
+
+func (*Eddilithium2) Generate() ([]byte, []byte) {
+	pub, priv := Generate()
+	return pub.Bytes(), priv.Bytes()
+}
+
+func (*Eddilithium2) Sign(privateKey interface{}, fileBytes []byte) []byte {
+	privKey := privateKey.(*eddilithium2.PrivateKey)
+	return Sign(privKey, fileBytes)
+}
+
+func (*Eddilithium2) Verify(publicKey interface{}, fileBytes []byte, signature []byte) bool {
+	pubKey := publicKey.(*eddilithium2.PublicKey)
+	return Verify(pubKey, fileBytes, signature)
+}
+
+func (*Eddilithium2) BytesToPrivateKey(keyBytes []byte) (interface{}, error) {
+	return BytesToPrivateKey(keyBytes)
+}
+
+func (*Eddilithium2) BytesToPublicKey(keyBytes []byte) (interface{}, error) {
+	return BytesToPublicKey(keyBytes)
+}
 
 func Generate() (*eddilithium2.PublicKey, *eddilithium2.PrivateKey) {
 	pubKey, privKey, err := eddilithium2.GenerateKey(nil)

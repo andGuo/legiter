@@ -1,8 +1,44 @@
 package dilithium2
 
 import (
+	"legiter/signer"
+
 	"github.com/cloudflare/circl/sign/dilithium/mode2"
 )
+
+// Implement the Signer interface
+type Dilithium2 struct{}
+
+func Signer() signer.Signer {
+	return &Dilithium2{}
+}
+
+func (*Dilithium2) Name() string {
+	return "dilithium2"
+}
+
+func (*Dilithium2) Generate() ([]byte, []byte) {
+	pub, priv := Generate()
+	return pub.Bytes(), priv.Bytes()
+}
+
+func (*Dilithium2) Sign(privateKey interface{}, fileBytes []byte) []byte {
+	privKey := privateKey.(*mode2.PrivateKey)
+	return Sign(privKey, fileBytes)
+}
+
+func (*Dilithium2) Verify(publicKey interface{}, fileBytes []byte, signature []byte) bool {
+	pubKey := publicKey.(*mode2.PublicKey)
+	return Verify(pubKey, fileBytes, signature)
+}
+
+func (*Dilithium2) BytesToPrivateKey(keyBytes []byte) (interface{}, error) {
+	return BytesToPrivateKey(keyBytes)
+}
+
+func (*Dilithium2) BytesToPublicKey(keyBytes []byte) (interface{}, error) {
+	return BytesToPublicKey(keyBytes)
+}
 
 func Generate() (*mode2.PublicKey, *mode2.PrivateKey) {
 	pubKey, privKey, err := mode2.GenerateKey(nil)

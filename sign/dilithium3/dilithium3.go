@@ -1,8 +1,44 @@
 package dilithium3
 
 import (
+	"legiter/signer"
+
 	"github.com/cloudflare/circl/sign/dilithium/mode3"
 )
+
+// Implement the Signer interface
+type Dilithium3 struct{}
+
+func Signer() signer.Signer {
+	return &Dilithium3{}
+}
+
+func (*Dilithium3) Name() string {
+	return "dilithium3"
+}
+
+func (*Dilithium3) Generate() ([]byte, []byte) {
+	pub, priv := Generate()
+	return pub.Bytes(), priv.Bytes()
+}
+
+func (*Dilithium3) Sign(privateKey interface{}, fileBytes []byte) []byte {
+	privKey := privateKey.(*mode3.PrivateKey)
+	return Sign(privKey, fileBytes)
+}
+
+func (*Dilithium3) Verify(publicKey interface{}, fileBytes []byte, signature []byte) bool {
+	pubKey := publicKey.(*mode3.PublicKey)
+	return Verify(pubKey, fileBytes, signature)
+}
+
+func (*Dilithium3) BytesToPrivateKey(keyBytes []byte) (interface{}, error) {
+	return BytesToPrivateKey(keyBytes)
+}
+
+func (*Dilithium3) BytesToPublicKey(keyBytes []byte) (interface{}, error) {
+	return BytesToPublicKey(keyBytes)
+}
 
 func Generate() (*mode3.PublicKey, *mode3.PrivateKey) {
 	pubKey, privKey, err := mode3.GenerateKey(nil)

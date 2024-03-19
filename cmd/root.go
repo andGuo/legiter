@@ -32,19 +32,6 @@ func Execute() {
 	}
 }
 
-func availableAlgorithms() []string {
-	return []string{
-		"ed25519",
-		"ed448",
-		"dilithium2",
-		"dilithium3",
-		"dilithium2_aes",
-		"dilithium3_aes",
-		"ed25519_dilithium2",
-		"ed448_dilithium3",
-	}
-}
-
 func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
