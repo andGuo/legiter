@@ -45,7 +45,7 @@ func signing(cmd *cobra.Command, args []string) {
 	signer, err := sign.GetSigner(strings.ToLower(keyType))
 	if err != nil {
 		fmt.Println("Error:", err)
-		cmd.Help()
+		_ = cmd.Help()
 		return
 	}
 
@@ -76,5 +76,5 @@ func init() {
 	rootCmd.AddCommand(signCmd)
 
 	signCmd.Flags().StringVarP(&privKeyFilename, "key", "k", "", "The file of the private key to use for signing")
-	signCmd.MarkFlagRequired("key")
+	_ = signCmd.MarkFlagRequired("key")
 }

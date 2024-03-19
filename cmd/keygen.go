@@ -42,7 +42,7 @@ func keygen(cmd *cobra.Command, args []string) {
 	signer, err := sign.GetSigner(algorithm)
 	if err != nil {
 		fmt.Println("Error:", err)
-		cmd.Help()
+		_ = cmd.Help()
 		return
 	}
 
@@ -59,6 +59,6 @@ func init() {
 	rootCmd.AddCommand(keygenCmd)
 
 	keygenCmd.Flags().StringVarP(&output, "output", "o", "", "The name of the output file(s) to write the public/private key pair to")
-	keygenCmd.MarkFlagRequired("output")
+	_ = keygenCmd.MarkFlagRequired("output")
 	keygenCmd.Flags().StringVarP(&algorithm, "algorithm", "a", "ed448_dilithium3", "The type of digital signature algorithm to use")
 }

@@ -38,5 +38,4 @@ func Execute() {
 }
 
 func init() {
-	return
 }

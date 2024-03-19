@@ -45,7 +45,7 @@ func verifying(cmd *cobra.Command, args []string) {
 	signer, err := sign.GetSigner(strings.ToLower(keyType))
 	if err != nil {
 		fmt.Println("Error:", err)
-		cmd.Help()
+		_ = cmd.Help()
 		return
 	}
 
@@ -78,7 +78,7 @@ func init() {
 	rootCmd.AddCommand(verifyCmd)
 
 	verifyCmd.Flags().StringVarP(&pubKeyFilename, "key", "k", "", "The file of the public key to use for verification")
-	verifyCmd.MarkFlagRequired("key")
+	_ = verifyCmd.MarkFlagRequired("key")
 	verifyCmd.Flags().StringVarP(&signatureFilename, "signature", "s", "", "The digital signature of the file")
-	verifyCmd.MarkFlagRequired("signature")
+	_ = verifyCmd.MarkFlagRequired("signature")
 }
