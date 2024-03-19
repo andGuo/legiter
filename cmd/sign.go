@@ -17,7 +17,9 @@ var signCmd = &cobra.Command{
 	Use:   "sign <filename>",
 	Short: "Signs a file using a digital signature algorithm and a private key",
 	Long: `
-	Signs a file using a digital signature algorithm and a private key. The supported algorithms are:
+	Signs a file using a digital signature algorithm and a private key. The private key to use for signing must be provided using the --key (-k) flag.
+	
+	The supported algorithms are:
 	- ed25519
 	- ed448
 	- dilithium2
@@ -75,13 +77,4 @@ func init() {
 
 	signCmd.Flags().StringVarP(&privKeyFilename, "key", "k", "", "The file of the private key to use for signing")
 	signCmd.MarkFlagRequired("key")
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// signCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// signCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

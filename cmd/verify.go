@@ -17,7 +17,9 @@ var verifyCmd = &cobra.Command{
 	Use:   "verify <filename>",
 	Short: "Verifies a file using a digital signature algorithm and a public key",
 	Long: `
-	Verifies a file using a digital signature algorithm and a public key. The digital signature of the file must be provided using the --signature (-s) flag. The public key to use for verification must be provided using the --key (-k) flag. The supported algorithms are:
+	Verifies a file using a digital signature algorithm and a public key. The digital signature of the file must be provided using the --signature (-s) flag. The public key to use for verification must be provided using the --key (-k) flag.
+	
+	The supported algorithms are:
 	- ed25519
 	- ed448
 	- dilithium2
@@ -65,7 +67,7 @@ func verifying(cmd *cobra.Command, args []string) {
 	if isLegit {
 		fmt.Println("The file is legitimate ✅")
 	} else {
-		fmt.Println("The file is not legitimate 🚫")
+		fmt.Println("The file is not legitimate 🚫; The file and/or the public key do not correspond to the given digital signature.")
 	}
 }
 
@@ -79,14 +81,4 @@ func init() {
 	verifyCmd.MarkFlagRequired("key")
 	verifyCmd.Flags().StringVarP(&signatureFilename, "signature", "s", "", "The digital signature of the file")
 	verifyCmd.MarkFlagRequired("signature")
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// verifyCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// verifyCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

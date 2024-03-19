@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 
-	"legiter/sign"	
+	"legiter/sign"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +17,7 @@ var keygenCmd = &cobra.Command{
 	Short: "Generate a public/private key pair for a specified digital signature algorithm",
 	Long: `
 	Generate a public/private key pair for a specified digital signature algorithm.
-	The key pair will be written to a file specified by the --filename (-f) flag.
+	The key pair will be written to a file specified by the --output (-o) flag.
 
 	The supported algorithms are:
 	- ed25519
@@ -47,24 +47,17 @@ func keygen(cmd *cobra.Command, args []string) {
 	}
 
 	pubKey, privKey := signer.Generate()
-	err = sign.WriteKeyPairToFile(pubKey, privKey, filename, algorithm)
+	err = sign.WriteKeyPairToFile(pubKey, privKey, output, algorithm)
 	checkKeygenError(err)
 }
 
-var filename string
+var output string
 var algorithm string
 
 func init() {
 	rootCmd.AddCommand(keygenCmd)
 
-	keygenCmd.Flags().StringVarP(&filename, "filename", "f", "", "The name of the file to write the public/private key pair to")
-	keygenCmd.Flags().StringVarP(&algorithm, "algorithm", "a", "", "The type of digital signature algorithm to use")
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// keygenCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// keygenCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	keygenCmd.Flags().StringVarP(&output, "output", "o", "", "The name of the output file(s) to write the public/private key pair to")
+	keygenCmd.MarkFlagRequired("output")
+	keygenCmd.Flags().StringVarP(&algorithm, "algorithm", "a", "ed448_dilithium3", "The type of digital signature algorithm to use")
 }
