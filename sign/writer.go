@@ -51,7 +51,7 @@ func WriteKeyPairToFile(pubKey []byte, privKey []byte, filename string, algorith
 		return err
 	}
 
-	err = os.WriteFile(path+".pub", genPemPubKey(pubKey, algorithm), 0644)
+	err = os.WriteFile(path+".pem", genPemPubKey(pubKey, algorithm), 0644)
 	if err != nil {
 		return err
 	}

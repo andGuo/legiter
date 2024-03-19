@@ -46,6 +46,7 @@ func keygen(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	fmt.Printf("Generating key pair using algorithm: %s\n", signer.Name())
 	pubKey, privKey := signer.Generate()
 	err = sign.WriteKeyPairToFile(pubKey, privKey, output, algorithm)
 	checkKeygenError(err)
